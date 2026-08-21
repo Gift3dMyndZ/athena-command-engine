@@ -12,9 +12,37 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+option(ATHENA_BUILD_TESTS "Build Athena unit tests" ON)
+
+add_library(
+    athena_core
+    STATIC
+        src/core/AIEngine.cpp
+)
+
+target_include_directories(
+    athena_core
+    PUBLIC
+        ${PROJECT_SOURCE_DIR}/include
+)
+
+target_compile_options(
+    athena_core
+    PRIVATE
+        -Wall
+        -Wextra
+        -Wpedantic
+)
+
 add_executable(
     athena
     src/main.cpp
+)
+
+target_link_libraries(
+    athena
+    PRIVATE
+        athena_core
 )
 
 target_compile_options(
@@ -24,3 +52,33 @@ target_compile_options(
         -Wextra
         -Wpedantic
 )
+
+include(CTest)
+
+if(BUILD_TESTING AND ATHENA_BUILD_TESTS)
+    find_package(GTest CONFIG REQUIRED)
+
+    add_executable(
+        athena_unit_tests
+        tests/unit/AIEngineTest.cpp
+    )
+
+    target_link_libraries(
+        athena_unit_tests
+        PRIVATE
+            athena_core
+            GTest::gtest
+            GTest::gtest_main
+    )
+
+    target_compile_options(
+        athena_unit_tests
+        PRIVATE
+            -Wall
+            -Wextra
+            -Wpedantic
+    )
+
+    include(GoogleTest)
+    gtest_discover_tests(athena_unit_tests)
+endif()
