@@ -14,6 +14,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(ATHENA_BUILD_TESTS "Build Athena unit tests" ON)
 
+# Locate the Homebrew Drogon installation.
+find_package(Drogon CONFIG REQUIRED)
+
 add_library(
     athena_core
     STATIC
@@ -37,12 +40,14 @@ target_compile_options(
 add_executable(
     athena
     src/main.cpp
+    src/api/HealthController.cpp
 )
 
 target_link_libraries(
     athena
     PRIVATE
         athena_core
+        Drogon::Drogon
 )
 
 target_compile_options(
