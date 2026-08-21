@@ -21,6 +21,7 @@ add_library(
     athena_core
     STATIC
         src/core/AIEngine.cpp
+        src/providers/DevelopmentProvider.cpp
 )
 
 target_include_directories(
@@ -40,6 +41,8 @@ target_compile_options(
 add_executable(
     athena
     src/main.cpp
+    src/api/ChatController.cpp
+    src/api/ErrorResponse.cpp
     src/api/HealthController.cpp
 )
 
