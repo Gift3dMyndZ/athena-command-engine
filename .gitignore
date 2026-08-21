@@ -1,0 +1,38 @@
+# CMake build output
+/build/
+/cmake-build-*/
+
+# Compiled files
+*.o
+*.a
+*.so
+*.dylib
+*.out
+
+# Temporary executable
+/athena
+
+# macOS files
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+
+# Runtime files
+*.log
+*.pid
+
+# Environment variables and secrets
+.env
+.env.local
+
+# Local AI models
+/models/
+*.gguf
+
+# Test and coverage output
+/coverage/
+
+# Generated CMake database
+compile_commands.json
