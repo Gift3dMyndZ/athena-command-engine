@@ -12,22 +12,30 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-option(ATHENA_BUILD_TESTS "Build Athena unit tests" ON)
+option(ATHENA_BUILD_TESTS "Build Athena tests" ON)
 
-# Locate the Homebrew Drogon installation.
+# Locate installed dependencies.
 find_package(Drogon CONFIG REQUIRED)
+find_package(cpr CONFIG REQUIRED)
 
 add_library(
     athena_core
     STATIC
         src/core/AIEngine.cpp
         src/providers/DevelopmentProvider.cpp
+        src/providers/LlamaCppProvider.cpp
 )
 
 target_include_directories(
     athena_core
     PUBLIC
         ${PROJECT_SOURCE_DIR}/include
+)
+
+target_link_libraries(
+    athena_core
+    PUBLIC
+        cpr::cpr
 )
 
 target_compile_options(
@@ -71,6 +79,7 @@ if(BUILD_TESTING AND ATHENA_BUILD_TESTS)
         tests/unit/AIEngineTest.cpp
         tests/unit/DevelopmentProviderTest.cpp
         tests/unit/ErrorResponseTest.cpp
+        tests/unit/LlamaCppProviderTest.cpp
         src/api/ErrorResponse.cpp
     )
 
@@ -118,16 +127,16 @@ if(BUILD_TESTING AND ATHENA_BUILD_TESTS)
             -Wpedantic
     )
 
- add_test(
-    NAME integration.rest_api
-    COMMAND
-        "${PROJECT_SOURCE_DIR}/scripts/run_rest_api_tests.sh"
-)
+    add_test(
+        NAME integration.rest_api
+        COMMAND
+            "${PROJECT_SOURCE_DIR}/scripts/run_rest_api_tests.sh"
+    )
 
-set_tests_properties(
-    integration.rest_api
-    PROPERTIES
-        WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
-        TIMEOUT 30
-)
+    set_tests_properties(
+        integration.rest_api
+        PROPERTIES
+            WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+            TIMEOUT 30
+    )
 endif()
