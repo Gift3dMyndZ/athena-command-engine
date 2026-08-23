@@ -69,12 +69,16 @@ if(BUILD_TESTING AND ATHENA_BUILD_TESTS)
     add_executable(
         athena_unit_tests
         tests/unit/AIEngineTest.cpp
+        tests/unit/DevelopmentProviderTest.cpp
+        tests/unit/ErrorResponseTest.cpp
+        src/api/ErrorResponse.cpp
     )
 
     target_link_libraries(
         athena_unit_tests
         PRIVATE
             athena_core
+            Drogon::Drogon
             GTest::gtest
             GTest::gtest_main
     )
@@ -88,5 +92,35 @@ if(BUILD_TESTING AND ATHENA_BUILD_TESTS)
     )
 
     include(GoogleTest)
-    gtest_discover_tests(athena_unit_tests)
+
+    gtest_discover_tests(
+        athena_unit_tests
+    )
+
+    add_executable(
+        athena_rest_api_tests
+        tests/integration/RestApiTest.cpp
+    )
+
+    target_link_libraries(
+        athena_rest_api_tests
+        PRIVATE
+            Drogon::Drogon
+            GTest::gtest
+            GTest::gtest_main
+    )
+
+    target_compile_options(
+        athena_rest_api_tests
+        PRIVATE
+            -Wall
+            -Wextra
+            -Wpedantic
+    )
+
+    gtest_discover_tests(
+        athena_rest_api_tests
+        TEST_PREFIX "integration."
+        DISCOVERY_MODE PRE_TEST
+    )
 endif()
