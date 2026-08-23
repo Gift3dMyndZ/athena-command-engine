@@ -118,9 +118,16 @@ if(BUILD_TESTING AND ATHENA_BUILD_TESTS)
             -Wpedantic
     )
 
-    gtest_discover_tests(
-        athena_rest_api_tests
-        TEST_PREFIX "integration."
-        DISCOVERY_MODE PRE_TEST
-    )
+ add_test(
+    NAME integration.rest_api
+    COMMAND
+        "${PROJECT_SOURCE_DIR}/scripts/run_rest_api_tests.sh"
+)
+
+set_tests_properties(
+    integration.rest_api
+    PROPERTIES
+        WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+        TIMEOUT 30
+)
 endif()
